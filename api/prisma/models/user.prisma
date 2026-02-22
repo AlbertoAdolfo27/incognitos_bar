@@ -1,0 +1,36 @@
+model User {
+    id           String    @id @default(uuid())
+    email        String
+    username     String    @unique
+    firstname    String
+    lastname     String
+    password     String
+    createdAt    DateTime  @default(now()) @map("created_at")
+    updatedAt    DateTime  @updatedAt @map("updated_at")
+    delectedAt   DateTime?
+    userStatusId String    @map("user_status_id") @default("01")
+    userRoleId   String    @map("user_role_id")
+
+    userRole   UserRole   @relation(fields: [userRoleId], references: [id])
+    userStatus UserStatus @relation(fields: [userStatusId], references: [id])
+
+    @@map("users")
+}
+
+model UserStatus {
+    id          String   @id
+    name        String   @unique
+    description String
+    users       User[]
+
+    @@map("users_status")
+}
+
+model UserRole {
+    id          String   @id
+    name        String   @unique
+    description String
+    users       User[]
+
+    @@map("user_roles")
+}
