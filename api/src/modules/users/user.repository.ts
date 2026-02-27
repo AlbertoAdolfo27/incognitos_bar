@@ -9,6 +9,7 @@ export const userSelects = {
     lastname: true,
     createdAt: true,
     updatedAt: true,
+    deletedAt: false,
     userStatusId: true,
     userRoleId: true,
 }
@@ -16,7 +17,7 @@ export const userSelects = {
 export async function getUsers() {
     return prisma.user.findMany({
         select: userSelects,
-        where: { delectedAt: null },
+        where: { deletedAt: null },
     })
 }
 
@@ -25,17 +26,34 @@ export async function getUserById(id: string) {
         select: userSelects,
         where: {
             id,
-            delectedAt: null
+            deletedAt: null
         }
     })
 }
 
-export async function getUserByUsername(username: string) {
+export async function getUserByUsername(username: string, includeDelected: boolean = false) {
+    const whereClause = includeDelected ?
+        { username } :
+        {
+            username,
+            deletedAt: null
+        }
+
+    const selects = { ...userSelects }
+    if (includeDelected) selects.deletedAt = true
+
     return prisma.user.findUnique({
+        select: selects,
+        where: whereClause
+    })
+}
+
+export async function getUserByEmail(email: string) {
+    return prisma.user.findFirst({
         select: userSelects,
         where: {
-            username,
-            delectedAt: null
+            email,
+            deletedAt: null
         }
     })
 }
@@ -47,12 +65,12 @@ export async function addUser(user: UserCreateDTO) {
     })
 }
 
-export async function updateUser(id: string, user: UserUpdateDTO) {
+export async function updateUser(userId: string, user: UserUpdateDTO) {
     return prisma.user.update({
         select: userSelects,
         where: {
-            id,
-            delectedAt: null
+            id: userId,
+            deletedAt: null
         },
         data: {
             firstname: user.firstname,
@@ -67,7 +85,7 @@ export async function updatePassword(id: string, password: string) {
         select: userSelects,
         where: {
             id,
-            delectedAt: null
+            deletedAt: null
         },
         data: { password }
     })
@@ -78,7 +96,7 @@ export async function updateUserRole(id: string, userRoleId: string) {
         select: userSelects,
         where: {
             id,
-            delectedAt: null
+            deletedAt: null
         },
         data: { userRoleId }
     })
@@ -89,7 +107,7 @@ export async function updateUserStatus(id: string, userStatusId: string) {
         select: userSelects,
         where: {
             id,
-            delectedAt: null
+            deletedAt: null
         },
         data: { userStatusId }
     })
@@ -97,12 +115,13 @@ export async function updateUserStatus(id: string, userStatusId: string) {
 
 export async function deleteUser(id: string) {
     return prisma.user.update({
+        select: { id: true, deletedAt: true },
         where: {
             id,
-            delectedAt: null
+            deletedAt: null
         },
         data: {
-            delectedAt: new Date()
+            deletedAt: new Date()
         }
     })
 }

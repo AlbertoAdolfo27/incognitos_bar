@@ -7,7 +7,7 @@ model User {
     password     String
     createdAt    DateTime  @default(now()) @map("created_at")
     updatedAt    DateTime  @updatedAt @map("updated_at")
-    delectedAt   DateTime?
+    deletedAt   DateTime?
     userStatusId String    @map("user_status_id") @default("01")
     userRoleId   String    @map("user_role_id")
 

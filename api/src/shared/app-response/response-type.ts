@@ -69,6 +69,22 @@ export const CONFLICT: ResponeType = {
     type: "error"
 }
 
+export const CONFLICT_USERNAME: ResponeType = {
+    responseCode: "conflit_002",
+    statusCode: 409,
+    statusText: "Conflit",
+    message: "The username is not available to be used by another user",
+    type: "error"
+}
+
+export const CONFLICT_EMAIL: ResponeType = {
+    responseCode: "conflit_003",
+    statusCode: 409,
+    statusText: "Conflit",
+    message: "The email is already used by other user",
+    type: "error"
+}
+
 export const INTERNAL_SERVER_ERROR: ResponeType = {
     responseCode: "internal_server_error_001",
     statusCode: 500,

@@ -1,7 +1,8 @@
 import * as userRepository from "@/src/modules/users/user.repository.js"
 import type { UserCreateDTO, UserUpdateDTO } from "./dtos/user.dtos.js"
 import { APIError } from "@/src/shared/api-error/error.js"
-import { CONFLICT, NOT_FOUND } from "@/src/shared/app-response/response-type.js"
+import { BAD_REQUEST, CONFLICT, CONFLICT_EMAIL, CONFLICT_USERNAME, NOT_FOUND } from "@/src/shared/app-response/response-type.js"
+import { USER_ROLE_ADMIN, USER_STATUS_ACTIVE, USER_STATUS_BLOCKED } from "./user.constants.js"
 
 export async function getUsers() {
     return userRepository.getUsers()
@@ -11,39 +12,74 @@ export async function getUserById(id: string) {
     return userRepository.getUserById(id)
 }
 
-export async function getUserByUsername(username: string) {
-    return userRepository.getUserByUsername(username)
+export async function getUserByUsername(username: string, includeDelected: boolean = false) {
+    return userRepository.getUserByUsername(username, includeDelected)
 }
 
-async function checkFoundUser(userID: string) {
-    const resUser = await getUserById(userID)
-    if (resUser) throw new APIError(NOT_FOUND, "User not found")
+export async function getUserByEmail(email: string) {
+    return userRepository.getUserByEmail(email)
 }
 
-export async function addUser(user: UserCreateDTO) {
-    const resUser = await getUserByUsername(user.username)
-    if (resUser) throw new APIError(CONFLICT, `User with email ${user.email} already exist`)
-
-    return userRepository.addUser(user)
+async function checkFoundUser(userId: string) {
+    const user = await getUserById(userId)
+    if (!user) throw new APIError(NOT_FOUND, "User not found")
+    return user
 }
 
-export async function updateUser(id: string, user: UserUpdateDTO) {
-    await checkFoundUser(id)
-    return userRepository.updateUser(id, user)
+export async function addUser(userCreate: UserCreateDTO) {
+    const userByUsername = await getUserByUsername(userCreate.username, true)
+    if (userByUsername) throw new APIError(CONFLICT_USERNAME)
+
+    const userByEmail = await getUserByEmail(userCreate.email)
+    if (userByEmail) throw new APIError(CONFLICT_EMAIL)
+
+    validatePassword(userCreate.password)
+
+    return userRepository.addUser(userCreate)
+}
+
+export async function updateUser(userId: string, userUpdate: UserUpdateDTO) {
+    const user = await checkFoundUser(userId)
+
+    if (
+        userUpdate.firstname === user.firstname &&
+        userUpdate.lastname === user.lastname &&
+        user.email === user.email
+    ) return user
+
+    const userByEmail = await getUserByEmail(userUpdate.email)
+
+    if (userByEmail && (userByEmail.id === user.id)) throw new APIError(CONFLICT_EMAIL)
+
+    return userRepository.updateUser(userId, userUpdate)
 }
 
 export async function updatePassword(id: string, password: string) {
     await checkFoundUser(id)
+    validatePassword(password)
+
     return userRepository.updatePassword(id, password)
 }
 
+function validatePassword(password: string) {
+    if (password.length < 8) throw new APIError(BAD_REQUEST, "The password must contains at list 8 characters")
+}
+
 export async function updateUserRole(id: string, userRoleId: string) {
-    await checkFoundUser(id)
+    const user = await checkFoundUser(id)
+    if (userRoleId !== USER_ROLE_ADMIN && userRoleId !== USER_ROLE_ADMIN) throw new APIError(BAD_REQUEST, "Invalid user role id")
+
+    if (user.userRoleId === userRoleId) return user
+
     return userRepository.updateUserRole(id, userRoleId)
 }
 
 export async function updateUserStatus(id: string, userStatusId: string) {
-    await checkFoundUser(id)
+    const user = await checkFoundUser(id)
+    if (userStatusId !== USER_STATUS_ACTIVE && userStatusId !== USER_STATUS_BLOCKED) throw new APIError(BAD_REQUEST, "Invalid user status id")
+
+    if (user.userStatusId === userStatusId) return user
+
     return userRepository.updateUserStatus(id, userStatusId)
 }
 
