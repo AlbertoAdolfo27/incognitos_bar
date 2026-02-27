@@ -1,4 +1,4 @@
-export const FastifySuccessResponse = (dataSchema?: object, description?: string) => {
+export const FastifySuccessResponse = (dataSchema?: object|null, description?: string) => {
     return {
         type: "object",
         description: description ? description : "The request has successfully processed",

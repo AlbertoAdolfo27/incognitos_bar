@@ -31,6 +31,9 @@ async function startServer() {
 
     await fastify.register(swaggerUi, {
         routePrefix: "/docs",
+        theme: {
+            title: "Incognitos Bar API Documentation",
+         }
     })
 
     fastify.get("/", {

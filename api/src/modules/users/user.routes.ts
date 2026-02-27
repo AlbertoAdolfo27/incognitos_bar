@@ -21,21 +21,23 @@ import {
 } from "./fastify-schemas/user.schemas.js"
 
 export default async function userRoutes(festify: FastifyInstance) {
-    festify.get("/users", GetUsersSchema, getUsers)
+    festify.register((festify: FastifyInstance) => {
+        
+        festify.get("/", { schema: GetUsersSchema }, getUsers)
 
-    festify.get("/users/:id", GetUserByIdSchema, getUserById)
+        festify.get("/:id", { schema: GetUserByIdSchema }, getUserById)
 
-    festify.post("/users", CreateUserSchema, createUser)
+        festify.post("/", { schema: CreateUserSchema }, createUser)
 
-    festify.patch("/users/:id", UpdateUserSchema, updateUser)
+        festify.patch("/:id", { schema: UpdateUserSchema }, updateUser)
 
-    festify.patch("/users/:id/password", UpdateUserPasswordSchema, updatePassword)
+        festify.patch("/:id/password", { schema: UpdateUserPasswordSchema }, updatePassword)
 
-    festify.patch("/users/:id/role", UpdateuserRoleSchema, updateUserRole)
+        festify.patch("/:id/role", { schema: UpdateuserRoleSchema }, updateUserRole)
 
-    festify.patch("/users/:id/status", UpdateuserStatusSchema, updateUserStatus)
+        festify.patch("/:id/status", { schema: UpdateuserStatusSchema }, updateUserStatus)
 
-    festify.delete("/users/:id", DeleteUserSchema, deleteUser)
+        festify.delete("/:id", { schema: DeleteUserSchema }, deleteUser)
 
-
+    }, { prefix: "/users" })
 }

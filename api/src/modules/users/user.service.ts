@@ -2,7 +2,7 @@ import * as userRepository from "@/src/modules/users/user.repository.js"
 import type { UserCreateDTO, UserUpdateDTO } from "./dtos/user.dtos.js"
 import { APIError } from "@/src/shared/api-error/error.js"
 import { BAD_REQUEST, CONFLICT, CONFLICT_EMAIL, CONFLICT_USERNAME, NOT_FOUND } from "@/src/shared/app-response/response-type.js"
-import { USER_ROLE_ADMIN, USER_STATUS_ACTIVE, USER_STATUS_BLOCKED } from "./user.constants.js"
+import { USER_ROLE_ADMIN, USER_ROLE_CASHIER, USER_STATUS_ACTIVE, USER_STATUS_BLOCKED } from "./user.constants.js"
 
 export async function getUsers() {
     return userRepository.getUsers()
@@ -67,7 +67,7 @@ function validatePassword(password: string) {
 
 export async function updateUserRole(id: string, userRoleId: string) {
     const user = await checkFoundUser(id)
-    if (userRoleId !== USER_ROLE_ADMIN && userRoleId !== USER_ROLE_ADMIN) throw new APIError(BAD_REQUEST, "Invalid user role id")
+    if (userRoleId !== USER_ROLE_ADMIN && userRoleId !== USER_ROLE_CASHIER) throw new APIError(BAD_REQUEST, "Invalid user role id")
 
     if (user.userRoleId === userRoleId) return user
 
