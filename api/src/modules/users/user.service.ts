@@ -45,15 +45,14 @@ export async function addUser(userCreate: UserCreateDTO) {
 export async function updateUser(userId: string, userUpdate: UserUpdateDTO) {
     const user = await checkFoundUser(userId)
 
-    if (
-        userUpdate.firstname === user.firstname &&
-        userUpdate.lastname === user.lastname &&
-        user.email === user.email
-    ) return user
-
-    const userByEmail = await getUserByEmail(userUpdate.email)
-
-    if (userByEmail && (userByEmail.id === user.id)) throw new APIError(CONFLICT_EMAIL)
+    if (!userUpdate.firstname) userUpdate.firstname = user.firstname
+    if (!userUpdate.lastname) userUpdate.lastname = user.lastname
+    if (!userUpdate.email) {
+        userUpdate.email = user.email
+    } else {
+        const userByEmail = await getUserByEmail(userUpdate.email)
+        if (userByEmail && (userByEmail.id !== user.id)) throw new APIError(CONFLICT_EMAIL)
+    }
 
     return userRepository.updateUser(userId, userUpdate)
 }

@@ -43,7 +43,7 @@ export async function updateUser(request: FastifyRequest, replay: FastifyReply) 
     try {
         const { id } = request.params as { id: string }
         const userUpdate = request.body as UserUpdateDTO
-
+        
         const user = await userService.updateUser(id, userUpdate)
 
         makeResponse(replay, SUCCESS, "The user has been successfully updated", { user })
