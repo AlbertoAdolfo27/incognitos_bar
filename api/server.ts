@@ -4,6 +4,7 @@ import cors from "@fastify/cors"
 import swagger from "@fastify/swagger"
 import swaggerUi from "@fastify/swagger-ui"
 import appRoutes from "./src/lib/routes/routes.js"
+import { appAuthMiddleware } from "./src/modules/auth/auth.middleware.js"
 
 async function startServer() {
 
@@ -26,15 +27,34 @@ async function startServer() {
             tags: [
                 { name: "users", description: "User related end-points" },
             ],
+            components: {
+                securitySchemes: {
+                    userAuth: {
+                        type: "http",
+                        scheme: "bearer",
+                        bearerFormat: "jwt"
+                    },
+                    appAuth: {
+                        type: "apiKey",
+                        in: "header",
+                        name: "API-Key"
+                    }
+                }
+            },
+            security: [
+                { appAuth: [] }
+            ]
         }
     })
 
     await fastify.register(swaggerUi, {
-        routePrefix: "/docs",
+        routePrefix: "/documentation",
         theme: {
             title: "Incognitos Bar API Documentation",
-         }
+        }
     })
+
+    fastify.addHook("preHandler", appAuthMiddleware)
 
     fastify.get("/", {
         schema: {
@@ -45,7 +65,8 @@ async function startServer() {
                     type: "object",
                     properties: {
                         status: { type: "string" },
-                        documentation: { type: "string" }
+                        documentation: { type: "string" },
+                        apiBaseUrl: { type: "string" }
                     }
 
                 }
@@ -54,7 +75,8 @@ async function startServer() {
     }, (request) => {
         return {
             status: "The API is running ok!",
-            documentation: `${request.protocol}://${request.host}/docs`
+            documentation: `${request.protocol}://${request.host}/documentation`,
+            apiBaseUrl: `${request.protocol}://${request.host}/api/`,
         }
     })
     await fastify.register(appRoutes, { prefix: "/api" })
