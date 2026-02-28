@@ -41,7 +41,8 @@ async function startServer() {
                 }
             },
             security: [
-                { appAuth: [] }
+                { appAuth: [] },
+                { userAuth: [] }
             ]
         }
     })
@@ -58,6 +59,7 @@ async function startServer() {
     fastify.get("/", {
         schema: {
             description: "API Status",
+            security: [],
             response: {
                 200: {
                     description: "API Status and documentation link",
@@ -77,7 +79,7 @@ async function startServer() {
             apiBaseUrl: `${request.protocol}://${request.host}/api/`,
         }
     })
-    
+
     await fastify.register(appRoutes, { prefix: "/api" })
 
     fastify.listen({ port: Number(process.env.SERVER_PORT as string), host: "0.0.0.0" }, (error) => {

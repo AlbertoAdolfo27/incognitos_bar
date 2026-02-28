@@ -3,6 +3,7 @@ import { FastifyErrorResponse, FastifySuccessResponse } from "@/src/shared/fasti
 export const LoginSchema = {
     description: "Login",
     tags: ["auth"],
+    security: [{ appAuth: [] }],
     body: {
         type: "object",
         required: ["username", "password"],

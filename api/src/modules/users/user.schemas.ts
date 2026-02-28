@@ -92,6 +92,7 @@ export const UpdateUserSchema = {
 	},
 	body: {
 		type: "object",
+		required: ["firstname", "lastname", "email"],
 		properties: {
 			firstname: { type: "string" },
 			lastname: { type: "string" },
