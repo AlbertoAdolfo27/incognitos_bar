@@ -1,23 +1,28 @@
 
 import type { PrismaClient } from "@/generated/prisma/client.js"
-import { USER_STATUS_ACTIVE, USER_STATUS_BLOCKED } from "@/src/modules/users/user.constants.js"
+import { USER_STATUS_ACTIVE, USER_STATUS_BLOCKED, USER_STATUS_DELETED } from "@/src/modules/users/user.constants.js"
 
 export async function seedUserStatus(prisma: PrismaClient) {
     const userStatus = [
         {
             id: USER_STATUS_ACTIVE,
             name: "active",
-            description: "Usuário Activo"
+            description: "Active user"
         },
         {
             id: USER_STATUS_BLOCKED,
             name: "blocked",
-            description: "Usuário bloqueado"
+            description: "Blocked user"
+        },
+        {
+            id: USER_STATUS_DELETED,
+            name: "deleted",
+            description: "Deleted user"
         }
     ]
 
     try {
-        userStatus.forEach(async status => {
+        for (const status of userStatus) {
             await prisma.userStatus.upsert(
                 {
                     where: { id: status.id },
@@ -25,7 +30,7 @@ export async function seedUserStatus(prisma: PrismaClient) {
                     create: status
                 }
             )
-        })
+        }
     } catch (error) {
         console.error("Error on seed user status:", error)
     }

@@ -1,13 +1,13 @@
 import { prisma } from "@/src/infra/database/prisma.js"
-import { seedUserRole } from "./seeds/user-role.js"
-import { seedUserStatus } from "./seeds/user-status.js"
-import { seedFirstAdmin } from "./seeds/user-admin.js"
+import { seedUserRole } from "./user-role.js"
+import { seedUserStatus } from "./user-status.js"
+import { seedFirstAdmin } from "./user-admin.js"
 
 
 async function main() {
     await seedUserRole(prisma)
     await seedUserStatus(prisma)
-   return await seedFirstAdmin(prisma)
+    await seedFirstAdmin(prisma)
 }
 
 try {

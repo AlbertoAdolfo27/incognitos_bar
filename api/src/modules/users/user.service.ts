@@ -1,8 +1,9 @@
 import * as userRepository from "@/src/modules/users/user.repository.js"
 import type { UserCreateDTO, UserUpdateDTO } from "./dtos/user.dtos.js"
 import { APIError } from "@/src/shared/api-error/error.js"
-import { BAD_REQUEST, CONFLICT, CONFLICT_EMAIL, CONFLICT_USERNAME, NOT_FOUND } from "@/src/shared/app-response/response-type.js"
+import { BAD_REQUEST, CONFLICT_EMAIL, CONFLICT_USERNAME, NOT_FOUND } from "@/src/shared/app-response/response-type.js"
 import { USER_ROLE_ADMIN, USER_ROLE_CASHIER, USER_STATUS_ACTIVE, USER_STATUS_BLOCKED } from "./user.constants.js"
+import * as argon2 from "argon2"
 
 export async function getUsers() {
     return userRepository.getUsers()
@@ -35,6 +36,9 @@ export async function addUser(userCreate: UserCreateDTO) {
 
     validatePassword(userCreate.password)
 
+    const hash = await argon2.hash(userCreate.password)
+    userCreate.password = hash
+
     return userRepository.addUser(userCreate)
 }
 
@@ -58,7 +62,8 @@ export async function updatePassword(id: string, password: string) {
     await checkFoundUser(id)
     validatePassword(password)
 
-    return userRepository.updatePassword(id, password)
+    const hash = await argon2.hash(password)
+    return userRepository.updatePassword(id, hash)
 }
 
 function validatePassword(password: string) {

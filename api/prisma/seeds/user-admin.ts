@@ -1,7 +1,7 @@
 import "dotenv/config"
 import { hash } from "argon2"
 import type { PrismaClient } from "@/generated/prisma/client.js"
-import { USER_ROLE_ADMIN, USER_STATUS_ACTIVE } from "@/src/modules/users/user.constants.js"
+import { USER_ROLE_ADMIN } from "@/src/modules/users/user.constants.js"
 
 export async function seedFirstAdmin(prisma: PrismaClient) {
     const firstname = process.env.FISRT_ADMIN_FIRSTNAME as string
@@ -22,7 +22,7 @@ export async function seedFirstAdmin(prisma: PrismaClient) {
     try {
         await prisma.user.upsert({
             where: { username: user.username },
-            update: user,
+            update: {},
             create: user
         })
     } catch (error) {

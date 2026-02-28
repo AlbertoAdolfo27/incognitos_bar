@@ -18,26 +18,26 @@ import {
     UpdateuserRoleSchema,
     UpdateUserSchema,
     UpdateuserStatusSchema
-} from "./fastify-schemas/user.schemas.js"
+} from './user.schemas.js'
 
-export default async function userRoutes(festify: FastifyInstance) {
-    festify.register((festify: FastifyInstance) => {
+export default async function userRoutes(fastify: FastifyInstance) {
+    await fastify.register((fastify: FastifyInstance) => {
         
-        festify.get("/", { schema: GetUsersSchema }, getUsers)
+        fastify.get("/", { schema: GetUsersSchema }, getUsers)
 
-        festify.get("/:id", { schema: GetUserByIdSchema }, getUserById)
+        fastify.get("/:id", { schema: GetUserByIdSchema }, getUserById)
 
-        festify.post("/", { schema: CreateUserSchema }, createUser)
+        fastify.post("/", { schema: CreateUserSchema }, createUser)
 
-        festify.patch("/:id", { schema: UpdateUserSchema }, updateUser)
+        fastify.patch("/:id", { schema: UpdateUserSchema }, updateUser)
 
-        festify.patch("/:id/password", { schema: UpdateUserPasswordSchema }, updatePassword)
+        fastify.patch("/:id/password", { schema: UpdateUserPasswordSchema }, updatePassword)
 
-        festify.patch("/:id/role", { schema: UpdateuserRoleSchema }, updateUserRole)
+        fastify.patch("/:id/role", { schema: UpdateuserRoleSchema }, updateUserRole)
 
-        festify.patch("/:id/status", { schema: UpdateuserStatusSchema }, updateUserStatus)
+        fastify.patch("/:id/status", { schema: UpdateuserStatusSchema }, updateUserStatus)
 
-        festify.delete("/:id", { schema: DeleteUserSchema }, deleteUser)
+        fastify.delete("/:id", { schema: DeleteUserSchema }, deleteUser)
 
     }, { prefix: "/users" })
 }

@@ -7,7 +7,6 @@ import appRoutes from "./src/lib/routes/routes.js"
 import { appAuthMiddleware } from "./src/modules/auth/auth.middleware.js"
 
 async function startServer() {
-
     const fastify = Fastify({
         logger: true
     })
@@ -68,7 +67,6 @@ async function startServer() {
                         documentation: { type: "string" },
                         apiBaseUrl: { type: "string" }
                     }
-
                 }
             }
         }
@@ -79,6 +77,7 @@ async function startServer() {
             apiBaseUrl: `${request.protocol}://${request.host}/api/`,
         }
     })
+    
     await fastify.register(appRoutes, { prefix: "/api" })
 
     fastify.listen({ port: Number(process.env.SERVER_PORT as string), host: "0.0.0.0" }, (error) => {

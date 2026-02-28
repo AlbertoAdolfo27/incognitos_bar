@@ -3,22 +3,22 @@ import type { PrismaClient } from "@/generated/prisma/client.js"
 import { USER_ROLE_ADMIN, USER_ROLE_CASHIER } from "@/src/modules/users/user.constants.js"
 
 export async function seedUserRole(prisma: PrismaClient) {
-    const roles = [
+    const userRoles = [
         {
             id: USER_ROLE_ADMIN,
             name: "admin",
-            description: "Administrador do sistema"
+            description: "Administrator"
         },
         {
             id: USER_ROLE_CASHIER,
             name: "cashier",
-            description: "Caixa e Atendente do bar"
+            description: "Cashier"
         }
 
     ]
 
     try {
-        roles.forEach(async role => {
+        for (const role of userRoles) {
             await prisma.userRole.upsert({
                 where: {
                     id: role.id
@@ -26,7 +26,7 @@ export async function seedUserRole(prisma: PrismaClient) {
                 update: role,
                 create: role
             })
-        })
+        }
     } catch (error) {
         console.error("Error on seed user roles:", error)
     }

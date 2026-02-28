@@ -1,5 +1,6 @@
 import { prisma } from "@/src/infra/database/prisma.js"
 import type { UserCreateDTO, UserUpdateDTO } from "./dtos/user.dtos.js"
+import { USER_STATUS_DELETED } from "./user.constants.js"
 
 export const userSelects = {
     id: true,
@@ -17,7 +18,7 @@ export const userSelects = {
 export async function getUsers() {
     return prisma.user.findMany({
         select: userSelects,
-        where: { deletedAt: null },
+        where: { userStatusId: { not: USER_STATUS_DELETED } },
     })
 }
 
@@ -26,7 +27,7 @@ export async function getUserById(id: string) {
         select: userSelects,
         where: {
             id,
-            deletedAt: null
+            userStatusId: { not: USER_STATUS_DELETED }
         }
     })
 }
@@ -36,7 +37,7 @@ export async function getUserByUsername(username: string, includeDelected: boole
         { username } :
         {
             username,
-            deletedAt: null
+            userStatusId: { not: USER_STATUS_DELETED }
         }
 
     const selects = { ...userSelects }
@@ -53,7 +54,7 @@ export async function getUserByEmail(email: string) {
         select: userSelects,
         where: {
             email,
-            deletedAt: null
+            userStatusId: { not: USER_STATUS_DELETED }
         }
     })
 }
@@ -70,7 +71,7 @@ export async function updateUser(userId: string, user: UserUpdateDTO) {
         select: userSelects,
         where: {
             id: userId,
-            deletedAt: null
+            userStatusId: { not: USER_STATUS_DELETED }
         },
         data: {
             firstname: user.firstname,
@@ -85,7 +86,7 @@ export async function updatePassword(id: string, password: string) {
         select: userSelects,
         where: {
             id,
-            deletedAt: null
+            userStatusId: { not: USER_STATUS_DELETED }
         },
         data: { password }
     })
@@ -96,7 +97,7 @@ export async function updateUserRole(id: string, userRoleId: string) {
         select: userSelects,
         where: {
             id,
-            deletedAt: null
+            userStatusId: { not: USER_STATUS_DELETED }
         },
         data: { userRoleId }
     })
@@ -107,7 +108,7 @@ export async function updateUserStatus(id: string, userStatusId: string) {
         select: userSelects,
         where: {
             id,
-            deletedAt: null
+            userStatusId: { not: USER_STATUS_DELETED }
         },
         data: { userStatusId }
     })
@@ -118,10 +119,11 @@ export async function deleteUser(id: string) {
         select: { id: true, deletedAt: true },
         where: {
             id,
-            deletedAt: null
+            userStatusId: { not: USER_STATUS_DELETED }
         },
         data: {
-            deletedAt: new Date()
+            deletedAt: new Date(),
+            userStatusId: USER_STATUS_DELETED
         }
     })
 }
