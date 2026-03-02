@@ -1,12 +1,16 @@
 import { makeResponse, makeResponseError } from "@/src/shared/app-response/response.js"
 import type { FastifyReply, FastifyRequest } from "fastify"
 import * as userService from "./user.service.js"
-import { CREATED, NOT_FOUND, SUCCESS } from "@/src/shared/app-response/response-type.js"
+import { CREATED, FORBIDDEN, NOT_FOUND, SUCCESS } from "@/src/shared/app-response/response-type.js"
 import { APIError } from "@/src/shared/api-error/error.js"
 import type { UserCreateDTO, UserUpdateDTO } from "./dtos/user.dtos.js"
+import { authenticateUser } from "../auth/auth.service.js"
+import { USER_ROLE_ADMIN } from "./user.constants.js"
 
 export async function getUsers(request: FastifyRequest, reply: FastifyReply) {
     try {
+        await authenticateUser(request, USER_ROLE_ADMIN)
+
         const users = await userService.getUsers()
         makeResponse(reply, SUCCESS, "", { users })
     } catch (error: Error | any) {
@@ -16,9 +20,13 @@ export async function getUsers(request: FastifyRequest, reply: FastifyReply) {
 
 export async function getUserById(request: FastifyRequest, reply: FastifyReply) {
     try {
+        const loggedUser = await authenticateUser(request)
         const { id } = request.params as { id: string }
 
+        if (loggedUser.role !== USER_ROLE_ADMIN && loggedUser.id !== id) throw new APIError(FORBIDDEN)
+
         const user = await userService.getUserById(id)
+        if (!user) throw new APIError(NOT_FOUND, "User not found")
 
         if (!user) throw new APIError(NOT_FOUND, "User not found")
         makeResponse(reply, SUCCESS, "", { user })
@@ -29,10 +37,11 @@ export async function getUserById(request: FastifyRequest, reply: FastifyReply) 
 
 export async function createUser(request: FastifyRequest, reply: FastifyReply) {
     try {
+        await authenticateUser(request, USER_ROLE_ADMIN)
+
         const userCreate = request.body as UserCreateDTO
 
         const user = await userService.addUser(userCreate)
-
         makeResponse(reply, CREATED, "The user has been successfully created", { user })
     } catch (error: Error | any) {
         makeResponseError(reply, error)
@@ -41,11 +50,14 @@ export async function createUser(request: FastifyRequest, reply: FastifyReply) {
 
 export async function updateUser(request: FastifyRequest, replay: FastifyReply) {
     try {
+        const loggedUser = await authenticateUser(request)
         const { id } = request.params as { id: string }
-        const userUpdate = request.body as UserUpdateDTO
-        
-        const user = await userService.updateUser(id, userUpdate)
 
+        if (loggedUser.role !== USER_ROLE_ADMIN && loggedUser.id !== id) throw new APIError(FORBIDDEN)
+
+        const userUpdate = request.body as UserUpdateDTO
+
+        const user = await userService.updateUser(id, userUpdate)
         makeResponse(replay, SUCCESS, "The user has been successfully updated", { user })
     } catch (error: Error | any) {
         makeResponseError(replay, error)
@@ -54,11 +66,14 @@ export async function updateUser(request: FastifyRequest, replay: FastifyReply) 
 
 export async function updatePassword(request: FastifyRequest, replay: FastifyReply) {
     try {
+        const loggedUser = await authenticateUser(request)
         const { id } = request.params as { id: string }
+
+        if (loggedUser.role !== USER_ROLE_ADMIN && loggedUser.id !== id) throw new APIError(FORBIDDEN)
+
         const { password } = request.body as { password: string }
 
         const user = await userService.updatePassword(id, password)
-
         makeResponse(replay, SUCCESS, "The user password has been successfully updated", { user })
     } catch (error: Error | any) {
         makeResponseError(replay, error)
@@ -67,6 +82,8 @@ export async function updatePassword(request: FastifyRequest, replay: FastifyRep
 
 export async function updateUserRole(request: FastifyRequest, replay: FastifyReply) {
     try {
+        await authenticateUser(request, USER_ROLE_ADMIN)
+
         const { id } = request.params as { id: string }
         const { userRoleId } = request.body as { userRoleId: string }
 
@@ -80,6 +97,8 @@ export async function updateUserRole(request: FastifyRequest, replay: FastifyRep
 
 export async function updateUserStatus(request: FastifyRequest, replay: FastifyReply) {
     try {
+        await authenticateUser(request, USER_ROLE_ADMIN)
+
         const { id } = request.params as { id: string }
         const { userStatusId } = request.body as { userStatusId: string }
 
@@ -93,6 +112,8 @@ export async function updateUserStatus(request: FastifyRequest, replay: FastifyR
 
 export async function deleteUser(request: FastifyRequest, replay: FastifyReply) {
     try {
+        await authenticateUser(request, USER_ROLE_ADMIN)
+
         const { id } = request.params as { id: string }
 
         await userService.deleteUser(id)

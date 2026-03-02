@@ -19,12 +19,11 @@ import {
     UpdateUserSchema,
     UpdateuserStatusSchema
 } from './user.schemas.js'
-import { userAuthMiddleware } from "../auth/auth.middleware.js"
 
 export default async function userRoutes(fastify: FastifyInstance) {
     await fastify.register((fastify: FastifyInstance) => {
 
-        fastify.get("/", { schema: GetUsersSchema, preHandler: [userAuthMiddleware] }, getUsers)
+        fastify.get("/", { schema: GetUsersSchema }, getUsers)
 
         fastify.get("/:id", { schema: GetUserByIdSchema }, getUserById)
 

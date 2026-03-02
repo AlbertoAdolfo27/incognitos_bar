@@ -15,6 +15,8 @@ async function startServer() {
         origin: "*"
     })
 
+    // ------------------------------------------------------------------------------------------------
+    // Swagger
     await fastify.register(swagger, {
         openapi: {
             openapi: "3.0.0",
@@ -47,6 +49,8 @@ async function startServer() {
         }
     })
 
+    // ------------------------------------------------------------------------------------------------
+    // Sagger UI
     await fastify.register(swaggerUi, {
         routePrefix: "/documentation",
         theme: {
@@ -54,8 +58,12 @@ async function startServer() {
         }
     })
 
+    // ------------------------------------------------------------------------------------------------
+    // Pre Handler
     fastify.addHook("preHandler", appAuthMiddleware)
 
+    // ------------------------------------------------------------------------------------------------
+    // Index
     fastify.get("/", {
         schema: {
             description: "API Status",
@@ -80,8 +88,12 @@ async function startServer() {
         }
     })
 
+    // ------------------------------------------------------------------------------------------------
+    // App Routes
     await fastify.register(appRoutes, { prefix: "/api" })
 
+    // ------------------------------------------------------------------------------------------------
+    // Run server
     fastify.listen({ port: Number(process.env.SERVER_PORT as string), host: "0.0.0.0" }, (error) => {
         if (error) {
             fastify.log.error(error)
