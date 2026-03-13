@@ -66,11 +66,11 @@ export async function addUser(user: UserCreateDTO) {
     })
 }
 
-export async function updateUser(userId: string, user: UserUpdateDTO) {
+export async function updateUser(id: string, user: UserUpdateDTO) {
     return prisma.user.update({
         select: userSelects,
         where: {
-            id: userId,
+            id,
             userStatusId: { not: USER_STATUS_DELETED }
         },
         data: {

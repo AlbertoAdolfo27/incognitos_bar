@@ -21,8 +21,8 @@ export async function getUserByEmail(email: string) {
     return userRepository.getUserByEmail(email)
 }
 
-async function checkFoundUser(userId: string) {
-    const user = await getUserById(userId)
+async function checkFoundUser(id: string) {
+    const user = await getUserById(id)
     if (!user) throw new APIError(NOT_FOUND, "User not found")
     return user
 }
@@ -42,8 +42,8 @@ export async function addUser(userCreate: UserCreateDTO) {
     return userRepository.addUser(userCreate)
 }
 
-export async function updateUser(userId: string, userUpdate: UserUpdateDTO) {
-    const user = await checkFoundUser(userId)
+export async function updateUser(id: string, userUpdate: UserUpdateDTO) {
+    const user = await checkFoundUser(id)
 
     if (!userUpdate.firstname) userUpdate.firstname = user.firstname
     if (!userUpdate.lastname) userUpdate.lastname = user.lastname
@@ -54,7 +54,7 @@ export async function updateUser(userId: string, userUpdate: UserUpdateDTO) {
         if (userByEmail && (userByEmail.id !== user.id)) throw new APIError(CONFLICT_EMAIL)
     }
 
-    return userRepository.updateUser(userId, userUpdate)
+    return userRepository.updateUser(id, userUpdate)
 }
 
 export async function updatePassword(id: string, password: string) {

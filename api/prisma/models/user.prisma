@@ -7,19 +7,24 @@ model User {
     password     String
     createdAt    DateTime  @default(now()) @map("created_at")
     updatedAt    DateTime  @updatedAt @map("updated_at")
-    deletedAt   DateTime?
-    userStatusId String    @map("user_status_id") @default("01")
+    deletedAt    DateTime?
+    userStatusId String    @default("01") @map("user_status_id")
     userRoleId   String    @map("user_role_id")
+    createdById  String?
+
+    products     Product[]
+    createdUsers User[]    @relation("UserCreatedBy")
 
     userRole   UserRole   @relation(fields: [userRoleId], references: [id])
     userStatus UserStatus @relation(fields: [userStatusId], references: [id])
+    createdBy  User?      @relation("UserCreatedBy", fields: [createdById], references: [id])
 
     @@map("users")
 }
 
 model UserStatus {
-    id          String   @id
-    name        String   @unique
+    id          String @id
+    name        String @unique
     description String
     users       User[]
 
@@ -27,8 +32,8 @@ model UserStatus {
 }
 
 model UserRole {
-    id          String   @id
-    name        String   @unique
+    id          String @id
+    name        String @unique
     description String
     users       User[]
 

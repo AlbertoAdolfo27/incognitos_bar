@@ -51,6 +51,12 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Category: 'Category',
+  SubCategory: 'SubCategory',
+  Product: 'Product',
+  ProductCategory: 'ProductCategory',
+  ProductSubCategory: 'ProductSubCategory',
+  Unit: 'Unit',
   User: 'User',
   UserStatus: 'UserStatus',
   UserRole: 'UserRole'
@@ -72,6 +78,73 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const CategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt'
+} as const
+
+export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
+
+
+export const SubCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt'
+} as const
+
+export type SubCategoryScalarFieldEnum = (typeof SubCategoryScalarFieldEnum)[keyof typeof SubCategoryScalarFieldEnum]
+
+
+export const ProductScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  quantity: 'quantity',
+  unitId: 'unitId',
+  price: 'price',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  createdBy: 'createdBy'
+} as const
+
+export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
+
+
+export const ProductCategoryScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  productId: 'productId',
+  categoryId: 'categoryId'
+} as const
+
+export type ProductCategoryScalarFieldEnum = (typeof ProductCategoryScalarFieldEnum)[keyof typeof ProductCategoryScalarFieldEnum]
+
+
+export const ProductSubCategoryScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  productId: 'productId',
+  subCategoryId: 'subCategoryId'
+} as const
+
+export type ProductSubCategoryScalarFieldEnum = (typeof ProductSubCategoryScalarFieldEnum)[keyof typeof ProductSubCategoryScalarFieldEnum]
+
+
+export const UnitScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  symbol: 'symbol',
+  createdAt: 'createdAt'
+} as const
+
+export type UnitScalarFieldEnum = (typeof UnitScalarFieldEnum)[keyof typeof UnitScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -83,7 +156,8 @@ export const UserScalarFieldEnum = {
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
   userStatusId: 'userStatusId',
-  userRoleId: 'userRoleId'
+  userRoleId: 'userRoleId',
+  createdById: 'createdById'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -123,6 +197,63 @@ export const NullsOrder = {
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
+export const CategoryOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description'
+} as const
+
+export type CategoryOrderByRelevanceFieldEnum = (typeof CategoryOrderByRelevanceFieldEnum)[keyof typeof CategoryOrderByRelevanceFieldEnum]
+
+
+export const SubCategoryOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description'
+} as const
+
+export type SubCategoryOrderByRelevanceFieldEnum = (typeof SubCategoryOrderByRelevanceFieldEnum)[keyof typeof SubCategoryOrderByRelevanceFieldEnum]
+
+
+export const ProductOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  unitId: 'unitId',
+  createdBy: 'createdBy'
+} as const
+
+export type ProductOrderByRelevanceFieldEnum = (typeof ProductOrderByRelevanceFieldEnum)[keyof typeof ProductOrderByRelevanceFieldEnum]
+
+
+export const ProductCategoryOrderByRelevanceFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  categoryId: 'categoryId'
+} as const
+
+export type ProductCategoryOrderByRelevanceFieldEnum = (typeof ProductCategoryOrderByRelevanceFieldEnum)[keyof typeof ProductCategoryOrderByRelevanceFieldEnum]
+
+
+export const ProductSubCategoryOrderByRelevanceFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  subCategoryId: 'subCategoryId'
+} as const
+
+export type ProductSubCategoryOrderByRelevanceFieldEnum = (typeof ProductSubCategoryOrderByRelevanceFieldEnum)[keyof typeof ProductSubCategoryOrderByRelevanceFieldEnum]
+
+
+export const UnitOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  symbol: 'symbol'
+} as const
+
+export type UnitOrderByRelevanceFieldEnum = (typeof UnitOrderByRelevanceFieldEnum)[keyof typeof UnitOrderByRelevanceFieldEnum]
+
+
 export const UserOrderByRelevanceFieldEnum = {
   id: 'id',
   email: 'email',
@@ -131,7 +262,8 @@ export const UserOrderByRelevanceFieldEnum = {
   lastname: 'lastname',
   password: 'password',
   userStatusId: 'userStatusId',
-  userRoleId: 'userRoleId'
+  userRoleId: 'userRoleId',
+  createdById: 'createdById'
 } as const
 
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]

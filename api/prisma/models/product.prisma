@@ -1,0 +1,43 @@
+model Product{
+    id String @id @default(uuid())
+    name String
+    description String?
+    quantity Int @default(0)
+    unitId String @map("unit_id")
+    price Decimal
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+    deletedAt   DateTime?
+    createdBy String
+    categories ProductCategory[]
+    subCategories ProductSubCategory[]
+
+    user User @relation(fields:[createdBy], references:[id])
+    unit Unit @relation(fields:[unitId], references:[id])
+
+    @@map("products")
+}
+
+model ProductCategory{
+    id String @id @default(uuid())
+    createdAt DateTime @default(now()) @map("created_at")
+    productId String
+    categoryId String
+
+    category Category @relation(fields:[categoryId], references:[id])
+    product Product @relation(fields:[productId], references:[id])
+
+    @@map("product_categories")
+}
+
+model ProductSubCategory{
+    id String @id @default(uuid())
+    createdAt DateTime @default(now()) @map("created_at")
+    productId String
+    subCategoryId String
+
+    subCategory SubCategory @relation(fields:[subCategoryId], references:[id])
+    product Product @relation(fields:[productId], references:[id])
+
+    @@map("product_sub_categories")
+}

@@ -85,6 +85,22 @@ export const CONFLICT_EMAIL: ResponeType = {
     type: "error"
 }
 
+export const CONFLICT_NAME: ResponeType = {
+    responseCode: "conflit_004",
+    statusCode: 409,
+    statusText: "Conflit",
+    message: "The name already exist",
+    type: "error"
+}
+
+export const CONFLICT_UNIT_SYMBOL: ResponeType = {
+    responseCode: "conflit_005",
+    statusCode: 409,
+    statusText: "Conflit",
+    message: "The unit symbol already exist",
+    type: "error"
+}
+
 export const INTERNAL_SERVER_ERROR: ResponeType = {
     responseCode: "internal_server_error_001",
     statusCode: 500,

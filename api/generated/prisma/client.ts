@@ -29,8 +29,8 @@ export * from "./enums.js"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Users
- * const users = await prisma.user.findMany()
+ * // Fetch zero or more Categories
+ * const categories = await prisma.category.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -39,6 +39,36 @@ export const PrismaClient = $Class.getPrismaClientClass()
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>
 export { Prisma }
 
+/**
+ * Model Category
+ * 
+ */
+export type Category = Prisma.CategoryModel
+/**
+ * Model SubCategory
+ * 
+ */
+export type SubCategory = Prisma.SubCategoryModel
+/**
+ * Model Product
+ * 
+ */
+export type Product = Prisma.ProductModel
+/**
+ * Model ProductCategory
+ * 
+ */
+export type ProductCategory = Prisma.ProductCategoryModel
+/**
+ * Model ProductSubCategory
+ * 
+ */
+export type ProductSubCategory = Prisma.ProductSubCategoryModel
+/**
+ * Model Unit
+ * 
+ */
+export type Unit = Prisma.UnitModel
 /**
  * Model User
  * 

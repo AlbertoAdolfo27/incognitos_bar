@@ -1,0 +1,21 @@
+
+
+model Category{
+    id String @id @default(uuid())
+    name String
+    description String?
+    createdAt DateTime @default(now()) @map("created_at")
+    products ProductCategory[]
+
+    @@map("categories")
+}
+
+model SubCategory{
+    id String @id @default(uuid())
+    name String
+    description String?
+    createdAt DateTime @default(now()) @map("created_at")
+    products ProductSubCategory[]
+
+    @@map("sub_categories")
+}
